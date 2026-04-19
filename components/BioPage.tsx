@@ -1,13 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Profile, Link as LinkType, Layout } from '@prisma/client'
+// Define types locally since Prisma types aren't available in components
+interface Profile {
+  id: string
+  username: string
+  bio?: string
+  avatarUrl?: string
+  theme: any
+  layout: 'LIST' | 'CARD' | 'MINIMAL'
+  links: Link[]
+}
+
+interface Link {
+  id: string
+  title: string
+  url: string
+  isActive: boolean
+  clickCount: number
+  orderIndex: number
+}
 
 interface BioPageProps {
   profile: Profile & {
-    links: LinkType[]
+    links: Link[]
   }
 }
 
@@ -31,7 +47,7 @@ export default function BioPage({ profile }: BioPageProps) {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profile.links.map((link) => (
-              <LinkCard key={link.id} link={link} />
+              <CardLink key={link.id} link={link} />
             ))}
           </div>
         )
@@ -61,11 +77,10 @@ export default function BioPage({ profile }: BioPageProps) {
         <div className="text-center mb-8">
           {profile.avatarUrl && (
             <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white shadow-lg">
-              <Image
+              <img
                 src={profile.avatarUrl}
                 alt={profile.username}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
           )}
@@ -93,7 +108,7 @@ export default function BioPage({ profile }: BioPageProps) {
   )
 }
 
-function ListLink({ link }: { link: LinkType }) {
+function ListLink({ link }: { link: Link }) {
   const [isClicked, setIsClicked] = useState(false)
 
   const handleClick = () => {
@@ -124,7 +139,7 @@ function ListLink({ link }: { link: LinkType }) {
   )
 }
 
-function CardLink({ link }: { link: LinkType }) {
+function CardLink({ link }: { link: Link }) {
   return (
     <a
       href={link.url}
@@ -141,7 +156,7 @@ function CardLink({ link }: { link: LinkType }) {
   )
 }
 
-function MinimalLink({ link }: { link: LinkType }) {
+function MinimalLink({ link }: { link: Link }) {
   return (
     <a
       href={link.url}

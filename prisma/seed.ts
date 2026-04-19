@@ -73,15 +73,8 @@ async function main() {
   ];
 
   for (const link of links) {
-    await prisma.link.upsert({
-      where: { 
-        profileId_orderIndex: {
-          profileId: link.profileId,
-          orderIndex: link.orderIndex,
-        }
-      },
-      update: link,
-      create: link,
+    await prisma.link.create({
+      data: link,
     });
   }
 

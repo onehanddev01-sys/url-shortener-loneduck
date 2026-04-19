@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  bio       String?
+  avatarUrl String?  @map("avatar_url")
+  theme     Json     @default("{\"primaryColor\": \"#3b82f6\", \"backgroundColor\": \"#f8fafc\"}")
+  layout    Layout   @default(LIST)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  links Link[]
+
+  @@map("profiles")
+}
+
+model Link {
+  id         String   @id @default(cuid())
+  title      String
+  url        String
+  orderIndex Int      @map("order_index")
+  isActive   Boolean  @default(true) @map("is_active")
+  clickCount Int      @default(0) @map("click_count")
+  profileId  String   @map("profile_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("links")
+}
+
+model ShortUrl {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  targetUrl  String   @map("target_url")
+  clickCount Int      @default(0) @map("click_count")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("short_urls")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  passwordHash String   @unique @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+enum Layout {
+  LIST
+  CARD
+  MINIMAL
+}

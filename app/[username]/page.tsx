@@ -23,7 +23,7 @@ export default async function UsernamePage({ params }: PageProps) {
     notFound()
   }
 
-  return <BioPage profile={profile} />
+  return <BioPage profile={profile as any} />
 }
 
 export async function generateMetadata({ params }: PageProps) {

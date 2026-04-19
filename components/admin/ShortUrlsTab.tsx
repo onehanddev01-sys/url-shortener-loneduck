@@ -2,11 +2,20 @@
 
 import { useState, useEffect } from 'react'
 
+interface ShortUrl {
+  id: string
+  slug: string
+  targetUrl: string
+  clickCount: number
+  createdAt: string
+  updatedAt: string
+}
+
 export default function ShortUrlsTab() {
-  const [shortUrls, setShortUrls] = useState([])
+  const [shortUrls, setShortUrls] = useState<ShortUrl[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [editingShortUrl, setEditingShortUrl] = useState(null)
+  const [editingShortUrl, setEditingShortUrl] = useState<ShortUrl | null>(null)
   const [formData, setFormData] = useState({
     slug: '',
     targetUrl: ''
@@ -57,7 +66,7 @@ export default function ShortUrlsTab() {
     }
   }
 
-  const handleEdit = (shortUrl: any) => {
+  const handleEdit = (shortUrl: ShortUrl) => {
     setEditingShortUrl(shortUrl)
     setFormData({
       slug: shortUrl.slug,
@@ -185,7 +194,7 @@ export default function ShortUrlsTab() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {shortUrls.map((shortUrl: any) => (
+                {shortUrls.map((shortUrl: ShortUrl) => (
                   <tr key={shortUrl.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       <div className="flex items-center space-x-2">
